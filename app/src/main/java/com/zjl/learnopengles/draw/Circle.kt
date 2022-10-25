@@ -2,6 +2,7 @@ package com.zjl.learnopengles.draw
 
 import android.content.Context
 import android.opengl.GLES20
+import android.opengl.Matrix
 import com.zjl.learnopengles.R
 import com.zjl.learnopengles.util.ShaderHelper
 import com.zjl.learnopengles.util.VertexArray
@@ -24,7 +25,7 @@ import kotlin.math.sin
  */
 class Circle(context: Context) : BaseShape(context) {
     // 由于OpenGL只能绘制三角形和点,所以使用切割法绘制原型
-    private val VERTEX_DATA_NUM = 8
+    private val VERTEX_DATA_NUM = 360
     private val circleVertex = FloatArray(VERTEX_DATA_NUM * 2 + 4)
     private val radian = (2 * PI / VERTEX_DATA_NUM).toFloat()
 
@@ -45,11 +46,13 @@ class Circle(context: Context) : BaseShape(context) {
 
     private val U_COLOR = "u_Color"
     private val A_POSITION = "a_Position"
+    private val U_PROJECTIONMATRIX = "u_ProjectionMatrix"
     private var aColorLocation = 0
     private var aPositionLocation = 0
+    private var aProjectionMatrixLocation = 0
 
     init {
-        mProgram = ShaderHelper.buildProgram(context, R.raw.line_vertex_shader, R.raw.line_fragment_shader)
+        mProgram = ShaderHelper.buildProgram(context, R.raw.circle_vertex_shader, R.raw.circle_fragment_shader)
         initVertexData()
         GLES20.glUseProgram(mProgram)
         vertexArray = VertexArray(circleVertex)
@@ -59,21 +62,30 @@ class Circle(context: Context) : BaseShape(context) {
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         super.onSurfaceCreated(gl, config)
-        aColorLocation = GLES20.glGetUniformLocation(mProgram, U_COLOR);
+        aColorLocation = GLES20.glGetUniformLocation(mProgram, U_COLOR)
 
-        aPositionLocation = GLES20.glGetAttribLocation(mProgram, A_POSITION);
+        aPositionLocation = GLES20.glGetAttribLocation(mProgram, A_POSITION)
 
-        vertexArray?.setVertexAttribPointer(0, aPositionLocation, POSITION_COMPONENT_COUNT, 0);
+        aProjectionMatrixLocation = GLES20.glGetUniformLocation(mProgram, U_PROJECTIONMATRIX)
+
+        vertexArray?.setVertexAttribPointer(0, aPositionLocation, POSITION_COMPONENT_COUNT, 0)
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         super.onSurfaceChanged(gl, width, height)
+        val aspectRatio = if (width > height) width.toFloat() / height else height.toFloat() / width
+        if (width > height) {
+            Matrix.orthoM(projectionMatrix, 0, -aspectRatio, aspectRatio, -1f, 1f, 0f, 10f)
+        } else {
+            Matrix.orthoM(projectionMatrix,0,-1f,1f,-aspectRatio,aspectRatio,0f,10f)
+        }
     }
 
     override fun onDrawFrame(gl: GL10?) {
         super.onDrawFrame(gl)
 
         GLES20.glUniform4f(aColorLocation, 0.0f, 0.0f, 1.0f, 1.0f)
+        GLES20.glUniformMatrix4fv(aProjectionMatrixLocation, 1, false, projectionMatrix, 0)
 
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, VERTEX_DATA_NUM + 2);
     }

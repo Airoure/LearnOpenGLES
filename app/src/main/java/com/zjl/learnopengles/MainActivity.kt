@@ -5,10 +5,7 @@ import android.opengl.GLSurfaceView
 import android.opengl.GLSurfaceView.Renderer
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.zjl.learnopengles.draw.Circle
-import com.zjl.learnopengles.draw.Line
-import com.zjl.learnopengles.draw.Point
-import com.zjl.learnopengles.draw.Triangle
+import com.zjl.learnopengles.draw.*
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -21,6 +18,7 @@ class MainActivity : AppCompatActivity() {
         var line: Line? = null
         var triangle: Triangle? = null
         var circle: Circle? = null
+        var picture: Picture? = null
         findViewById<GLSurfaceView>(R.id.v_gl_surface).apply {
             setEGLContextClientVersion(2)
             setRenderer(object : Renderer {
@@ -28,16 +26,17 @@ class MainActivity : AppCompatActivity() {
                     //point = Point(this@MainActivity)
                     //line = Line(this@MainActivity)
                     //triangle = Triangle(this@MainActivity)
-                    circle = Circle(this@MainActivity)
-                    circle?.onSurfaceCreated(gl, config)
+                    //circle = Circle(this@MainActivity)
+                    picture = Picture(this@MainActivity)
+                    picture?.onSurfaceCreated(gl, config)
                 }
 
                 override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
-                    circle?.onSurfaceChanged(gl, width, height)
+                    picture?.onSurfaceChanged(gl, width, height)
                 }
 
                 override fun onDrawFrame(gl: GL10?) {
-                    circle?.onDrawFrame(gl)
+                    picture?.onDrawFrame(gl)
                 }
 
             })
