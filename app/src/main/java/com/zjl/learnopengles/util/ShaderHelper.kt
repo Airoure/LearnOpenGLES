@@ -45,7 +45,7 @@ object ShaderHelper {
         GLES20.glCompileShader(shaderObjId)
         val compileStatus = intArrayOf(0)
         GLES20.glGetShaderiv(shaderObjId, GLES20.GL_COMPILE_STATUS, compileStatus, 0)
-
+ 
         if (compileStatus[0] == 0) {
             // 编译失败
             GLES20.glDeleteShader(shaderObjId)
