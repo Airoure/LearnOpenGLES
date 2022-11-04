@@ -17,7 +17,7 @@ import android.util.Log
 object ShaderHelper {
 
     fun buildProgram(vertexShaderSource: String, fragmentShaderSource: String): Int {
-        var program = -1
+        var program: Int
         val vertexShader = compileVertexShader(vertexShaderSource)
         val fragmentShader = compileFragmentShader(fragmentShaderSource)
 

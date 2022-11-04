@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         if (supportE2) {
             glSurfaceView?.setEGLContextClientVersion(2)
-            glSurfaceView?.setRenderer(MyRenderer3(this))
+            glSurfaceView?.setRenderer(AirHockeyRenderer(this))
             renderSet = true
         } else {
             Toast.makeText(this, "not support", Toast.LENGTH_SHORT).show()

@@ -35,6 +35,7 @@ object TextureHelper {
         val bitmap = BitmapFactory.decodeResource(context.resources, resourceId, options)
         if (bitmap == null) {
             glDeleteTextures(1, textureObjId, 0)
+            Log.e("Tesaaaw", "generate texture failed")
             return 0
         }
 
@@ -46,7 +47,7 @@ object TextureHelper {
         GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmap, 0)
         bitmap.recycle()
 
-        /*glGenerateMipmap(GL_TEXTURE_2D)*/
+        glGenerateMipmap(GL_TEXTURE_2D)
         glBindTexture(GL_TEXTURE_2D, 0)
         return textureObjId[0]
     }
